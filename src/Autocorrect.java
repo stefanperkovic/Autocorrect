@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Autocorrect
@@ -8,9 +9,10 @@ import java.io.IOException;
  * A command-line tool to suggest similar words when given one not in the dictionary.
  * </p>
  * @author Zach Blick
- * @author YOUR NAME HERE
+ * @author Stefan Perkovic
  */
 public class Autocorrect {
+
 
     /**
      * Constucts an instance of the Autocorrect class.
@@ -18,6 +20,7 @@ public class Autocorrect {
      * @param threshold The maximum number of edits a suggestion can have.
      */
     public Autocorrect(String[] words, int threshold) {
+
 
     }
 
@@ -29,7 +32,6 @@ public class Autocorrect {
      */
     public String[] runTest(String typed) {
 
-        return new String[0];
     }
 
 
