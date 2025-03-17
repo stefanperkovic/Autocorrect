@@ -12,7 +12,9 @@ import java.util.ArrayList;
  * @author Stefan Perkovic
  */
 public class Autocorrect {
-
+    private String[] dictionary;
+    private int threshold;
+    private int nGramSize = 3;
 
     /**
      * Constucts an instance of the Autocorrect class.
@@ -20,7 +22,8 @@ public class Autocorrect {
      * @param threshold The maximum number of edits a suggestion can have.
      */
     public Autocorrect(String[] words, int threshold) {
-
+        this.dictionary = words;
+        this.threshold = threshold;
 
     }
 
@@ -31,9 +34,45 @@ public class Autocorrect {
      * to threshold, sorted by edit distnace, then sorted alphabetically.
      */
     public String[] runTest(String typed) {
+        ArrayList <String> viableWords = new ArrayList<>();
+
+        for (int i = 0; i < dictionary.length; i++){
+            if (levenshteinDistance(typed, dictionary[i]) <= threshold){
+                viableWords.add(dictionary[i]);
+            }
+        }
+
+        return viableWords.toArray(new String[0]);
 
     }
 
+
+    private int levenshteinDistance(String one, String two){
+        one = one.toLowerCase();
+        two = two.toLowerCase();
+
+
+        int[][] dynamic = new int[one.length() + 1][two.length() + 1];
+        for (int i = 0; i <= one.length(); i++){
+            dynamic[i][0] = i;
+        }
+        for (int j = 0; j <= two.length(); j++){
+            dynamic[0][j] = j;
+        }
+        for (int i = 1; i <= one.length(); i++){
+            for (int j = 1; j <= two.length(); j++){
+                if (one.charAt(i - 1) == two.charAt(j - 1)){
+                    dynamic[i][j] = dynamic[i - 1][j - 1];
+                }
+                else{
+                    dynamic[i][j] = Math.min(dynamic[i -1][j] + 1, dynamic[i][j - 1] + 1);
+                }
+
+            }
+        }
+        return dynamic[one.length()][two.length()];
+
+    }
 
     /**
      * Loads a dictionary of words from the provided textfiles in the dictionaries directory.
