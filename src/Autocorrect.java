@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Autocorrect
@@ -42,6 +43,7 @@ public class Autocorrect {
             }
         }
 
+
         return viableWords.toArray(new String[0]);
 
     }
@@ -65,7 +67,7 @@ public class Autocorrect {
                     dynamic[i][j] = dynamic[i - 1][j - 1];
                 }
                 else{
-                    dynamic[i][j] = Math.min(dynamic[i -1][j] + 1, dynamic[i][j - 1] + 1);
+                    dynamic[i][j] = Math.min(Math.min(dynamic[i -1][j] + 1, dynamic[i][j - 1] + 1), dynamic[i - 1][j - 1] + 1);
                 }
 
             }
