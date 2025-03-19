@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Autocorrect
@@ -44,6 +43,17 @@ public class Autocorrect {
         }
 
 
+        for (int i = 1; i < viableWords.size(); i++) {
+            String key = viableWords.get(i);
+            int keyDist = levenshteinDistance(typed, key);
+            int j = i - 1;
+
+            while (j >= 0 && levenshteinDistance(typed, viableWords.get(j)) > keyDist) {
+                viableWords.set(j + 1, viableWords.get(j));
+                j--;
+            }
+            viableWords.set(j + 1, key);
+        }
         return viableWords.toArray(new String[0]);
 
     }
@@ -72,8 +82,9 @@ public class Autocorrect {
 
             }
         }
-        return dynamic[one.length()][two.length()];
 
+
+        return dynamic[one.length()][two.length()];
     }
 
     /**
