@@ -42,16 +42,24 @@ public class Autocorrect {
             }
         }
 
-
         for (int i = 1; i < viableWords.size(); i++) {
             String key = viableWords.get(i);
             int keyDist = levenshteinDistance(typed, key);
             int j = i - 1;
 
-            while (j >= 0 && levenshteinDistance(typed, viableWords.get(j)) > keyDist) {
-                viableWords.set(j + 1, viableWords.get(j));
-                j--;
+            while (j >= 0) {
+                String current = viableWords.get(j);
+                int currentDist = levenshteinDistance(typed, current);
+
+                if (currentDist > keyDist || (currentDist == keyDist && current.compareTo(key) > 0)) {
+                    viableWords.set(j + 1, current);
+                    j--;
+                }
+                else {
+                    break;
+                }
             }
+
             viableWords.set(j + 1, key);
         }
         return viableWords.toArray(new String[0]);
