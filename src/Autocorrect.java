@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class Autocorrect {
     private String[] dictionary;
     private int threshold;
-    private int nGramSize = 3;
 
     /**
      * Constucts an instance of the Autocorrect class.
@@ -34,24 +33,30 @@ public class Autocorrect {
      * to threshold, sorted by edit distnace, then sorted alphabetically.
      */
     public String[] runTest(String typed) {
+        // Create an ArrayList to store words within threshold edit distance
         ArrayList <String> viableWords = new ArrayList<>();
 
+        // Iterate through dictionary to find words within threshold distance
         for (int i = 0; i < dictionary.length; i++){
+            // Calculate edit distance and add word if within threshold
             if (levenshteinDistance(typed, dictionary[i]) <= threshold){
                 viableWords.add(dictionary[i]);
             }
         }
 
+        // Sort the viable words using insertion sort
         for (int i = 1; i < viableWords.size(); i++) {
             String key = viableWords.get(i);
             int keyDist = levenshteinDistance(typed, key);
             int j = i - 1;
 
+            // Move elements that have greater distance or same distance but alphabetically later
             while (j >= 0) {
                 String current = viableWords.get(j);
                 int currentDist = levenshteinDistance(typed, current);
 
                 if (currentDist > keyDist || (currentDist == keyDist && current.compareTo(key) > 0)) {
+                    // Shift the current word forward
                     viableWords.set(j + 1, current);
                     j--;
                 }
@@ -59,7 +64,7 @@ public class Autocorrect {
                     break;
                 }
             }
-
+            // Place the key word in its sorted position
             viableWords.set(j + 1, key);
         }
         return viableWords.toArray(new String[0]);
@@ -71,27 +76,31 @@ public class Autocorrect {
         one = one.toLowerCase();
         two = two.toLowerCase();
 
-
         int[][] dynamic = new int[one.length() + 1][two.length() + 1];
+
+        // Initialize first row and column with incremental values
         for (int i = 0; i <= one.length(); i++){
             dynamic[i][0] = i;
         }
         for (int j = 0; j <= two.length(); j++){
             dynamic[0][j] = j;
         }
+        // Fill the dynamic programming table
         for (int i = 1; i <= one.length(); i++){
             for (int j = 1; j <= two.length(); j++){
+                // If characters match, no additional cost
                 if (one.charAt(i - 1) == two.charAt(j - 1)){
                     dynamic[i][j] = dynamic[i - 1][j - 1];
                 }
                 else{
+                    // Take minimum of deletion, insertion, or substitution costs
                     dynamic[i][j] = Math.min(Math.min(dynamic[i -1][j] + 1, dynamic[i][j - 1] + 1), dynamic[i - 1][j - 1] + 1);
                 }
 
             }
         }
 
-
+        // Return the Levenshtein distance
         return dynamic[one.length()][two.length()];
     }
 
