@@ -153,14 +153,18 @@ public class Autocorrect {
 
         while(!input.equals("")){
 
+            // Grabs closest words
             String[] suggestions = autocorrect.runTest(input);
 
+            // Checks if no close matches
             if (suggestions.length == 0) {
                 System.out.println("No matches found.");
             }
+            // Checks user inputted already correct word
             else if (suggestions.length == 1 && levenshteinDistance(input, suggestions[0]) == 0){
                 System.out.println("Already a valid word");
             }
+            // Prints all close matches
             else {
                 System.out.println("Suggestions:");
                 for (String suggestion: suggestions){
