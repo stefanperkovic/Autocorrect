@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Autocorrect
@@ -38,8 +39,13 @@ public class Autocorrect {
 
         // Iterate through dictionary to find words within threshold distance
         for (int i = 0; i < dictionary.length; i++){
+            int distance  = levenshteinDistance(typed, dictionary[i]);
+            // If we find an exact match, return only that word immediately
+            if (distance == 0) {
+                return new String[]{dictionary[i]};
+            }
             // Calculate edit distance and add word if within threshold
-            if (levenshteinDistance(typed, dictionary[i]) <= threshold){
+            else if (distance <= threshold){
                 viableWords.add(dictionary[i]);
             }
         }
@@ -72,7 +78,7 @@ public class Autocorrect {
     }
 
 
-    private int levenshteinDistance(String one, String two){
+    private static int levenshteinDistance(String one, String two){
         one = one.toLowerCase();
         two = two.toLowerCase();
 
@@ -129,4 +135,46 @@ public class Autocorrect {
             throw new RuntimeException(e);
         }
     }
+
+    public static void main(String[] args){
+        // Load dictionary and determine threshold size
+        String[] dictionary = loadDictionary("large");
+        int threshold = 2;
+
+        // Create Autocorrect instance
+        Autocorrect autocorrect = new Autocorrect(dictionary, threshold);
+
+        // Create Scanner for user input
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter a word:");
+
+        String input = scanner.nextLine().trim();
+
+        while(!input.equals("")){
+
+            String[] suggestions = autocorrect.runTest(input);
+
+            if (suggestions.length == 0) {
+                System.out.println("No matches found.");
+            }
+            else if (suggestions.length == 1 && levenshteinDistance(input, suggestions[0]) == 0){
+                System.out.println("Already a valid word");
+            }
+            else {
+                System.out.println("Suggestions:");
+                for (String suggestion: suggestions){
+                    System.out.println(suggestion);
+                }
+
+            }
+            System.out.println("Enter a word:");
+            input = scanner.nextLine().trim();
+
+        }
+        scanner.close();
+
+    }
+
+
 }
